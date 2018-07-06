@@ -6,17 +6,17 @@ Description: This is a staff salary management system,
 it can easily query wages data and calculate them.
 Others: This is a test product.
 Function List: 
-1.read() //读取职工工资数据
-2.write() //保存职工工资数据
-3.write1() //保存删除后职工工资数据
-4.find() //查询职工工资数据
-5.list() //浏览职工工资数据
-6.modify() //修改职工工资数据
-7.del() //删除职工工资数据
-8.add() //添加职工工资数据
-9.grsds() //计算个人所得税
-10.main() //主菜单1
-11.main2() //主菜单2
+1.read() //Read the data
+2.write() //Save the data
+3.find() //Find the date
+4.list() //Browsing the data
+5.modify() //Modify the data
+6.del() //Delate the data
+7.add() //Add the date
+8.grsds() //Calculate the data
+9.menu() //The main menu
+10.deputy() //The deputy menu
+11.main()//The Main function
 History: 
 1.Date: 
   Author: 
@@ -30,28 +30,40 @@ using namespace std;
 int n=0;
 int read(); //读取职工工资数据
 void write(); //保存职工工资数据
-void write1(); //保存删除后职工工资数据
 void find(); //查询职工工资数据
 void list(); //浏览职工工资数据
 void modify(); //修改职工工资数据
 void del(); //删除职工工资数据
+int del_ad(int);//删除函数的附件
 void add(); //添加职工工资数据
 float grsds(float x); //计算个人所得税
-void menu1(); //主菜单1
-void menu2(); //主菜单2
+void menu(); //主菜单
+void deputy(); //副菜单
 struct zggz //职工数据
 {
-    char num[10];
+    int num;
     char name[10];
     float gwgz,xjgz,zwjt,jxgz,yfgz,grs,sfgz;
 };
 struct zggz zggz[100];
 struct zggz zggz1[100];
 
+/***********************************************************
+Function:read
+Discription:read the data
+Calls:fopen,fseek,ftell,sizeof,fread,fclose
+Callde By:menu,deputy,main
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:none
+Others:none
+***********************************************************/
 int read() //读取职工工资数据
 {
 	FILE*fp;
-	fp=fopen("gz.dat","a+b");
+	fp=fopen("gz.dat","ab+");
     fseek(fp,0,SEEK_SET);
     fseek(fp,0,SEEK_END);
     long x=ftell(fp)/sizeof(struct zggz); // 统计人数
@@ -65,112 +77,253 @@ int read() //读取职工工资数据
 	fclose(fp);
 }
 
+/***********************************************************
+Function:write
+Discription:write the data
+Calls:fopen,fwrite,sizeof,fclose,printf
+Callde By:menu,deputy,modify,del,add
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:none
+Others:none
+***********************************************************/
 void write() //保存职工工资数据
 {
 	FILE*fp;
 	fp=fopen("gz.dat","wb+");
 	fwrite(zggz,sizeof(struct zggz),n,fp);
 	fclose(fp);
-	//cout<<"保存成功...\n";
 	printf("保存成功...\n");
-	menu2();
+	deputy();
 }
 
-void write1() //保存删除后职工工资数据
-{
-	FILE*fp;
-	fp=fopen("gz.dat","wb+");
-	fwrite(zggz1,sizeof(struct zggz),n-1,fp);
-	fclose(fp);
-	//cout<<"保存成功...\n";
-	printf("保存成功...\n");
-	menu2();
-}
-
+/***********************************************************
+Function:find
+Discription:find the data
+Calls:printf,scanf,deputy
+Callde By:menu,deputy
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:none
+Others:none
+***********************************************************/
 void find() //查询职工工资数据
 {
-	int x,gonghao;
-	//cout<<"请输入你要查询的工号(例如:1)";
+	int gonghao,x;
 	printf("请输入你要查询的工号(例如:1)");
-	//cin>>x;
-	scanf("%d",&x);
-	gonghao=x-1;
-	//cout<<zggz[gonghao].num<<" "<<zggz[gonghao].name<<" "<<zggz[gonghao].gwgz<<" "<<zggz[gonghao].xjgz<<" "<<zggz[gonghao].zwjt<<" "<<zggz[gonghao].jxgz<<" "<<zggz[gonghao].yfgz<<" "<<zggz[gonghao].grs<<" "<<zggz[gonghao].sfgz<<endl;
-	printf("%s %s %.0f %.0f %.0f %.0f %.0f %.0f %.0f\n",
-		zggz[gonghao].num,
-		zggz[gonghao].name,
-		zggz[gonghao].gwgz,
-		zggz[gonghao].xjgz,
-		zggz[gonghao].zwjt,
-		zggz[gonghao].jxgz,
-		zggz[gonghao].yfgz,
-		zggz[gonghao].grs,
-		zggz[gonghao].sfgz);
-	menu2();
+	scanf("%d",&gonghao);
+	for(int i=0;i<n;i++)
+	{
+		if(gonghao==zggz[i].num)
+		{
+			printf("职工工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资:\n");
+			printf("%-8d %-6s %-8.0f %-8.0f %-8.0f %-8.0f %-8.0f %-10.0f %-8.0f\n",
+		    zggz[i].num,
+		    zggz[i].name,
+		    zggz[i].gwgz,
+		    zggz[i].xjgz,
+		    zggz[i].zwjt,
+		    zggz[i].jxgz,
+		    zggz[i].yfgz,
+		    zggz[i].grs,
+		    zggz[i].sfgz);
+			x = 1;
+		}
+	}
+	if (x != 1)
+	{
+		printf("查无此人...");
+	}
+	deputy();
 }
 
+/***********************************************************
+Function:list
+Discription:browsing the data
+Calls:printf,deputy
+Callde By:menu,deputy
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:none
+Others:none
+***********************************************************/
 void list() //浏览职工工资数据
 {
-	//cout<<"职工工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资:\n";
 	printf("职工工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资:\n");
 	for(int i=0;i<n;i++)
 	{
-		//cout<<zggz[i].num<<" "<<zggz[i].name<<" "<<zggz[i].gwgz<<" "<<zggz[i].xjgz<<" "<<zggz[i].zwjt<<" "<<zggz[i].jxgz<<" "<<zggz[i].yfgz<<" "<<zggz[i].grs<<" "<<zggz[i].sfgz<<endl;
-		printf("%s %s %.0f %.0f %.0f %.0f %.0f %.0f %.0f\n",
-			zggz[i].num,
-			zggz[i].name,
-			zggz[i].gwgz,
-			zggz[i].xjgz,
-			zggz[i].zwjt,
-			zggz[i].jxgz,
-			zggz[i].yfgz,
-			zggz[i].grs,
-			zggz[i].sfgz);
+		printf("%-8d %-6s %-8.0f %-8.0f %-8.0f %-8.0f %-8.0f %-10.0f %-8.0f\n",
+		zggz[i].num,
+		zggz[i].name,
+		zggz[i].gwgz,
+		zggz[i].xjgz,
+		zggz[i].zwjt,
+		zggz[i].jxgz,
+		zggz[i].yfgz,
+		zggz[i].grs,
+		zggz[i].sfgz);
 	}
-	//cout<<"输入完成，共"<<n<<"名职工...\n";
 	printf("输入完成，共%d名职工...\n",n);
-	menu2();
+	deputy();
 }
 
+/***********************************************************
+Function:modify
+Discription:modify the data
+Calls:printf,deputy,grsds
+Callde By:menu,deputy
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:none
+Others:none
+***********************************************************/
 void modify() //修改职工工资数据
 {
-	int gonghao,x,y;
-	char num1[10];
+	int gonghao,i,j,x,y,z;
+	int num1;
     char name1[10];
-	//cout<<"请输入职工工号(例如1):";
 	printf("请输入职工工号(例如1):");
-    //cin>>x;
+	scanf("%d",&gonghao);
+	for(i=0;i<n;i++)
+	{
+		if(gonghao==zggz[i].num)
+		{
+			printf("职工工号 姓名 岗位工资 薪级工资 职务津贴 绩效工资 应发工资 个人所得税 实发工资:\n");
+			printf("%-8d %-6s %-8.0f %-8.0f %-8.0f %-8.0f %-8.0f %4.0f %-8.0f\n",
+			    zggz[i].num,
+			    zggz[i].name,
+			    zggz[i].gwgz,
+			    zggz[i].xjgz,
+			    zggz[i].zwjt,
+			    zggz[i].jxgz,
+			    zggz[i].yfgz,
+			    zggz[i].grs,
+			    zggz[i].sfgz);
+			printf("请选择修改方式(整体修改请选1，单个数据修改请选2):");
+			scanf("%d", &y);
+			switch (y)
+			{
+		    case 1:
+			    {
+				    printf("请重新输入职工工号,姓名,岗位工资,薪级工资,职务津贴,绩效工资:\n");
+				    scanf("%d %s %f %f %f %f",
+					    &num1,
+					    &name1,
+					    &zggz[i].gwgz,
+					    &zggz[i].xjgz,
+					    &zggz[i].zwjt,
+					    &zggz[i].jxgz);
+					zggz[i].num = num1;
+					strcpy_s(zggz[i].name, name1);
+				    break;
+			    }
+			case 2:
+			    {
+				    printf("(修改职工工号选1,姓名2,岗位工资3,薪级工资4,职务津贴5,绩效工资6)\n");
+				    printf("请输入要修改的数据:");
+					scanf("%d",&z);
+					switch (z)
+					{
+					case 1:
+						{
+							printf("请输入工号:");
+							scanf("%d", &num1);
+							zggz[i].num = num1;
+						    break;
+						}
+					case 2:
+						{
+							printf("请输入姓名:");
+							scanf("%s", &name1);
+							strcpy_s(zggz[i].name, name1);
+							break;
+						}
+					case 3:
+						{
+							printf("请输入岗位工资:");
+							scanf("%f", &zggz[i].gwgz);
+							break;
+						}
+					case 4:
+						{
+							printf("请输入薪级工资:");
+							scanf("%f", &zggz[i].xjgz);
+							break;
+						}
+					case 5:
+						{
+							printf("请输入职务津贴:");
+							scanf("%f", &zggz[i].zwjt);
+							break;
+						}
+					case 6:
+						{
+							printf("请输入绩效工资:");
+							scanf("%f", &zggz[i].jxgz);
+						}
+					}
+				}
+			}
+		}
+		zggz[i].yfgz = zggz[i].gwgz + zggz[i].xjgz + zggz[i].zwjt + zggz[i].jxgz;
+		zggz[i].grs = grsds(zggz[i].gwgz + zggz[i].xjgz + zggz[i].zwjt + zggz[i].jxgz);
+		zggz[i].sfgz = zggz[i].yfgz - zggz[i].grs;
+	}
+	printf("是否保存修改到文件中(是请选择1,否请选择2)\n");
 	scanf("%d",&x);
-	gonghao=x-1;
-	//cout<<zggz[gonghao].num<<" "<<zggz[gonghao].name<<" "<<zggz[gonghao].gwgz<<" "<<zggz[gonghao].xjgz<<" "<<zggz[gonghao].zwjt<<" "<<zggz[gonghao].jxgz<<" "<<zggz[gonghao].yfgz<<" "<<zggz[gonghao].grs<<" "<<zggz[gonghao].sfgz<<endl;
-	printf("%s %s %.0f %.0f %.0f %.0f %.0f %.0f %.0f\n",
-		zggz[gonghao].num,
-		zggz[gonghao].name,
-		zggz[gonghao].gwgz,
-		zggz[gonghao].xjgz,
-		zggz[gonghao].zwjt,
-		zggz[gonghao].jxgz,
-		zggz[gonghao].yfgz,
-		zggz[gonghao].grs,
-		zggz[gonghao].sfgz);
-	//cout<<"请重新输入职工相关数据:\n";
-	printf("请重新输入职工相关数据:\n");
-	//cin>>num1>>name1>>zggz[gonghao].gwgz>>zggz[gonghao].xjgz>>zggz[gonghao].zwjt>>zggz[gonghao].jxgz;
-	scanf("%s %s %f %f %f %f",
-		&num1,
-		&name1,
-		&zggz[gonghao].gwgz,
-		&zggz[gonghao].xjgz,
-		&zggz[gonghao].zwjt,
-		&zggz[gonghao].jxgz);
-	zggz[gonghao].yfgz=zggz[gonghao].gwgz+zggz[gonghao].xjgz+zggz[gonghao].zwjt+zggz[gonghao].jxgz;
-    strcpy(zggz[gonghao].num,num1);
-    strcpy(zggz[gonghao].name,name1);
-    zggz[gonghao].grs=grsds(zggz[gonghao].gwgz+zggz[gonghao].xjgz+zggz[gonghao].zwjt+zggz[gonghao].jxgz);
-    zggz[gonghao].sfgz=zggz[gonghao].yfgz-zggz[gonghao].grs;
-	//cout<<"是否保存修改(是请选择1,否请选择2,否将关闭程序)\n";
-	printf("是否保存修改(是请选择1,否请选择2,否将关闭程序)\n");
-	//cin>>y;
+    switch(x)
+	{
+	case 1:
+	    {
+		    write();
+		}
+	case 2:
+		{
+		    break;
+		}
+	}
+}
+
+/***********************************************************
+Function:del
+Discription:delate the data
+Calls:printf,,scanf,write,deputy,del_ad,
+Callde By:menu,deputy
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:none
+Others:none
+***********************************************************/
+void del()//删除职工工资数据
+{
+	int gonghao,x,y,i;
+	printf("请输入要删除的职工数据(例如001):");
+	scanf("%d",&gonghao);
+	if (n == 0)
+	{
+		printf("目前没有任何职工数据");
+	}
+	else
+	{
+		for (i = 0; i < n - 1; i++)
+		{
+			if (gonghao == zggz[i].num)
+			{
+				del_ad(i);
+			}
+		}
+	}
+	printf("是否保存修改到文件中(是请选择1,否请选择2)\n");
 	scanf("%d",&y);
     switch(y)
 	{
@@ -180,79 +333,65 @@ void modify() //修改职工工资数据
 		}
 	case 2:
 		{
-            exit(1);
+            deputy();
 		}
 	}
-	menu2();
 }
 
-void del()//删除职工工资数据
+/***********************************************************
+Function:del_ad
+Discription:del's extra function
+Calls:none
+Callde By:del
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:0
+Others:none
+***********************************************************/
+int del_ad(int x)
 {
-	int gonghao,x,y,i;
-	//cout<<"请输入要删除的数据(例如1):";
-	printf("请输入要删除的职工数据(例如1):");
-	//cin>>x;
-	scanf("%d",&x);
-	gonghao=x-1;
-	for(i=0;i<n-1;i++)
+	int i=x;
+	for(;i<n-1;i++)
 	{
-		if(i<gonghao) //如果在要删除的数据前,就直接将zggz数组该位置上的数据赋值给zggz1数组相应位置
-		{
-		    strcpy(zggz1[i].num,zggz[i].num);
-		    strcpy(zggz1[i].name,zggz[i].name);
-		    zggz1[i].gwgz=zggz[i].gwgz;
-		    zggz1[i].xjgz=zggz[i].xjgz;
-		    zggz1[i].zwjt=zggz[i].zwjt;
-		    zggz1[i].jxgz=zggz[i].jxgz;
-		    zggz1[i].yfgz=zggz[i].yfgz;
-		    zggz1[i].grs=zggz[i].grs;
-		    zggz1[i].sfgz=zggz[i].sfgz;
-		}
-		else //如果在要删除的数据后,就将zggz数组后一个位置的数据赋给zggz1数组的前一个位置
-		{
-			strcpy(zggz1[i].num,zggz[i+1].num);
-		    strcpy(zggz1[i].name,zggz[i+1].name);
-		    zggz1[i].gwgz=zggz[i+1].gwgz;
-		    zggz1[i].xjgz=zggz[i+1].xjgz;
-		    zggz1[i].zwjt=zggz[i+1].zwjt;
-		    zggz1[i].jxgz=zggz[i+1].jxgz;
-		    zggz1[i].yfgz=zggz[i+1].yfgz;
-		    zggz1[i].grs=zggz[i+1].grs;
-		    zggz1[i].sfgz=zggz[i+1].sfgz;
-		}
+		zggz[i].num = zggz[i + 1].num;
+	    strcpy_s(zggz1[i].name, zggz[i + 1].name);
+	    zggz[i].gwgz = zggz[i + 1].gwgz;
+	    zggz[i].xjgz = zggz[i + 1].xjgz;
+	    zggz[i].zwjt = zggz[i + 1].zwjt;
+	    zggz[i].jxgz = zggz[i + 1].jxgz;
+	    zggz[i].yfgz = zggz[i + 1].yfgz;
+	    zggz[i].grs = zggz[i + 1].grs;
+	    zggz[i].sfgz = zggz[i + 1].sfgz;
 	}
-	//cout<<"是否保存修改(是请选择1,否请选择2,否将关闭程序)\n";
-	printf("是否保存修改(是请选择1,否请选择2,否将关闭程序)\n");
-	//cin>>y;
-	scanf("%d",&y);
-    switch(y)
-	{
-	case 1:
-		{
-			write1();
-		}
-	case 2:
-		{
-            exit(1);
-		}
-	}
-}
+	n--;
+	return 0;
+};
 
+/***********************************************************
+Function:add
+Discription:add the data
+Calls:printf,scanf,write,grsds
+Callde By:menu,deputy
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:none
+Others:none
+***********************************************************/
 void add() //添加职工工资数据
 {
-	int i,j,k;
-    char num1[10];
+	int i,j,k,x,y;
+    int num1;
     char name1[10];
-	//cout<<"请输入您想要添加的职工人数(最大容量为100人):";
 	printf("请输入您想要添加的职工人数(最大容量为100人):");
-	//cin>>j;
 	scanf("%d",&j);
-	for(i=n;i<n+j;i++)
+	for(i=n;i<j+n;i++)
 	{
-	    //cout<<"请输入职工工号、姓名、岗位工资、薪级工资、职务津贴、绩效工资:\n";
 		printf("请输入职工工号、姓名、岗位工资、薪级工资、职务津贴、绩效工资:\n");
-        //cin>>num1>>name1>>zggz[i].gwgz>>zggz[i].xjgz>>zggz[i].zwjt>>zggz[i].jxgz;
-		scanf("%s %s %f %f %f %f",
+		scanf("%d %s %f %f %f %f",
 		&num1,
 		&name1,
 		&zggz[i].gwgz,
@@ -260,29 +399,28 @@ void add() //添加职工工资数据
 		&zggz[i].zwjt,
 		&zggz[i].jxgz);
 	    zggz[i].yfgz=zggz[i].gwgz+zggz[i].xjgz+zggz[i].zwjt+zggz[i].jxgz;
-        strcpy(zggz[i].num,num1);
-        strcpy(zggz[i].name,name1);
+        zggz[i].num=num1;
+        strcpy_s(zggz[i].name,name1);
 	    zggz[i].grs=grsds(zggz[i].gwgz+zggz[i].xjgz+zggz[i].zwjt+zggz[i].jxgz);
 	    zggz[i].sfgz=zggz[i].yfgz-zggz[i].grs;
 	}
-	n+=j;
-	//cout<<"是否保存修改(是请选择1,否请选择2,否将关闭程序)\n";
-	printf("是否保存修改(是请选择1,否请选择2,否将关闭程序)\n");
-	//cin>>k;
-	scanf("%d",&k);
-    switch(k)
-	{
-	case 1:
-		{
-			write();
-		}
-	case 2:
-		{
-            exit(1);
-		}
-	}
+	n += j;
+	write();
+	printf("添加成功，数据已保存\n");
 }
 
+/***********************************************************
+Function:grsds
+Discription:Calculate the data
+Calls:
+Callde By:menu,deputy
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:grs
+Others:none
+***********************************************************/
 float grsds(float x) //计算个人所得税
 {
     float grs;
@@ -325,7 +463,19 @@ float grsds(float x) //计算个人所得税
     return grs;
 }
 
-void menu1()//主菜单
+/***********************************************************
+Function:menu
+Discription://The main menu
+Calls:write,find,list,modify,del,add
+Callde By:main
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:
+Others:none
+***********************************************************/
+void menu()//主菜单
 {
 	printf("###  欢迎使用广西民族大学软件与信息安全学院职工工资管理系统  ###\n");
 	printf("\n请选择<1 - 7> :\n");
@@ -339,56 +489,61 @@ void menu1()//主菜单
 	printf("|         7. 退出系统                                          |\n");
 	printf("================================================================\n");
 	printf("\n     你的选择是:");
-    /*cout<<"               <----------工资管理系统---------->          "<<endl;
-    cout<<"               <            1.查询              >          "<<endl;
-    cout<<"               <            2.浏览              >          "<<endl;
-    cout<<"               <            3.修改              >          "<<endl;
-    cout<<"               <            4.添加              >          "<<endl;
-    cout<<"               <            5.删除              >          "<<endl;
-    cout<<"               <            6.保存              >          "<<endl;
-    cout<<"               <            7.退出              >          "<<endl;
-    cout<<"               <-------------------------------->          "<<endl;
-	cout<<"请输入数字选择需要使用的功能(回车确定):";*/
 	int x;
-    //cin>>x;
 	scanf("%d",&x);
 	switch(x)
 	{
 	case 1:
 		{
+		    system("cls");
 			find();break;
 		}
 	case 2:
 		{
+		    system("cls");
 			modify();break;
 		}
 	case 3:
 		{
+		    system("cls");
 			add();break;
 		}
 	case 4:
 		{
+		    system("cls");
 			del();break;
 		}
 	case 5:
 		{
+		    system("cls");
 			write();break;
 		}
 	case 6:
 		{
+		    system("cls");
 			list();break;
 		}
 	case 7:
 		{
-			//cout<<"感谢使用...\n";
 			printf("感谢使用...\n");
 			exit(1);
 		}
 	}
-	//cout<<"请输入数字1-7以选择所需功能...\n";
-	menu2();
 }
-void menu2()
+
+/***********************************************************
+Function:deputy
+Discription://The deputy menu
+Calls:write,find,list,modify,del,add
+Callde By:write,find,list,modify,del
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:
+Others:none
+***********************************************************/
+void deputy()//副菜单
 {
 	read();
 	printf("\n请选择<1 - 7> :\n");
@@ -402,57 +557,65 @@ void menu2()
 	printf("|         7. 退出系统                                          |\n");
 	printf("================================================================\n");
 	printf("\n     你的选择是:");
-	/*cout<<"          <            1.查询              >          "<<endl;
-    cout<<"          <            2.浏览              >          "<<endl;
-    cout<<"          <            3.修改              >          "<<endl;
-    cout<<"          <            4.添加              >          "<<endl;
-    cout<<"          <            5.删除              >          "<<endl;
-    cout<<"          <            6.保存              >          "<<endl;
-    cout<<"          <            7.退出              >          "<<endl;
-	cout<<"请输入数字选择需要使用的功能(回车确定):";*/
 	int x;
     cin>>x;
 	switch(x)
 	{
 	case 1:
 		{
+		    system("cls");
 			find();break;
 		}
 	case 2:
 		{
+		    system("cls");
 			modify();break;
 		}
 	case 3:
 		{
+		    system("cls");
 			add();break;
 		}
 	case 4:
 		{
+		    system("cls");
 			del();break;
 		}
 	case 5:
 		{
+		    system("cls");
 			write();break;
 		}
 	case 6:
 		{
+		    system("cls");
 			list();break;
 		}
 	case 7:
 		{
-			//cout<<"感谢使用...\n";
 			printf("感谢使用...\n");
 			exit(1);
 		}
 	}
-	//cout<<"请输入数字1-7以选择所需功能...\n";
-	menu2();
+	deputy();
 }
 
+/***********************************************************
+Function:deputy
+Discription://The main function
+Calls:read,menu
+Callde By:none
+Table Accessed:none
+Table Update:none
+Input:Please look at the function
+Output:Please look at the function
+Return:0
+Others:none
+***********************************************************/
 int main()
 {
 	read();
-	menu1();
+	menu();
 	system("pause");
     return 0;
 }
